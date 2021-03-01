@@ -1,0 +1,24 @@
+###Install VMWare Tools##
+PS-GetDrive
+D:
+.\setup64.exe ##need to make this silent
+## End ##
+
+#Configure IP Address. Need to make variable for IP
+New-NetIPAddress –InterfaceAlias “Ethernet0” –IPAddress “10.0.10.20” –PrefixLength 24 -DefaultGateway 10.0.10.253
+#Configure DNS servers. Need to make variables for DNS Servers IPs
+Set-DnsClientServerAddress -InterfaceAlias “Ethernet0” -ServerAddresses 10.0.10.10, 127.0.0.1
+
+#Rename Computer. Need to make variable for New name
+Rename-Computer -NewName "dc2" -Force -Restart
+
+
+#Install Active Directory Domain Services
+Add-WindowsFeature AD-Domain-Services
+
+#add domain controller to domain. Need to make silent. Asked for SafeModePassword (DSM) and to confirm firm setup. 
+PS C:\> Install-ADDSDomainController -InstallDns -Credential (Get-Credential "AD\Administrator") -DomainName "corp.contoso.com"
+
+#references
+https://www.dell.com/support/kbdoc/en-us/000121955/installing-active-directory-domain-services-and-promoting-the-server-to-a-domain-controller
+
